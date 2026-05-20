@@ -1,0 +1,2005 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>HEKA: Islas en Sombra — Novela Visual · TFG 2024–2025</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="HEKA: Islas en Sombra — Una novela visual steampunk donde tus decisiones no tienen respuesta, solo consecuencias.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+
+/* ── Tokens ── */
+:root {
+  --ink:          #0a0a0f;
+  --ink-2:        #11141c;
+  --ink-3:        #181c26;
+  --line:         rgba(245,230,211,.13);
+  --line-s:       rgba(245,230,211,.26);
+  --paper:        #F5E6D3;
+  --paper-m:      rgba(245,230,211,.62);
+  --paper-d:      rgba(245,230,211,.38);
+  --heka:         #00BFFF;
+  --heka-d:       #0080b3;
+  --heka-g:       rgba(0,191,255,.4);
+  --copper:       #B87333;
+  --copper-l:     #D9A24C;
+  --copper-g:     rgba(217,162,76,.3);
+  --danger:       #c44a3a;
+  --serif:        'IM Fell English', Georgia, serif;
+  --display:      'Cinzel', serif;
+  --mono:         'JetBrains Mono', monospace;
+  --max:          1320px;
+  --nav-h:        64px;
+}
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--serif);
+  overflow-x: hidden;
+}
+
+/* ── Nav ── */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: background 400ms ease, border-color 400ms ease;
+}
+#navbar.scrolled {
+  background: rgba(7,8,13,.92);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.nav-inner {
+  flex: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .32em;
+  color: var(--heka);
+  text-decoration: none;
+  text-shadow: 0 0 20px var(--heka-g);
+  white-space: nowrap;
+  text-indent: .32em;
+}
+.nav-logo span {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: .28em;
+  color: var(--copper-l);
+  margin-left: 12px;
+  opacity: .85;
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+}
+.nav-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--paper-d);
+  text-decoration: none;
+  text-indent: .28em;
+  transition: color .2s;
+}
+.nav-link:hover, .nav-link.active { color: var(--heka); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--copper-l);
+  padding: 5px 12px;
+  border: 1px solid rgba(217,162,76,.2);
+  opacity: .85;
+}
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--heka);
+  padding: 7px 18px;
+  border: 1px solid var(--heka);
+  background: rgba(0,191,255,.06);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s;
+}
+.nav-cta:hover { background: rgba(0,191,255,.12); }
+.nav-progress-bar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--heka-d), var(--heka));
+  width: 0%;
+  transition: width .1s linear;
+  box-shadow: 0 0 8px var(--heka-g);
+}
+
+/* ── Scroll animations ── */
+.a {
+  opacity: 0;
+  transform: translateY(26px);
+  filter: blur(4px);
+  transition: opacity .7s cubic-bezier(.2,.7,.2,1),
+              transform .7s cubic-bezier(.2,.7,.2,1),
+              filter .6s ease;
+}
+.a.in { opacity: 1; transform: none; filter: blur(0); }
+.a[data-d="1"]  { transition-delay: .1s; }
+.a[data-d="2"]  { transition-delay: .2s; }
+.a[data-d="3"]  { transition-delay: .3s; }
+.a[data-d="4"]  { transition-delay: .4s; }
+.a[data-d="5"]  { transition-delay: .5s; }
+.a[data-d="6"]  { transition-delay: .6s; }
+.a[data-d="7"]  { transition-delay: .7s; }
+
+/* ── Shared section layout ── */
+.section {
+  position: relative;
+  padding: 130px 0;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+.section.alt { background: var(--ink-2); }
+.container {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 64px;
+}
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .45em;
+  text-transform: uppercase;
+  color: var(--copper-l);
+  margin-bottom: 18px;
+}
+.section-title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(32px, 3.5vw, 60px);
+  line-height: 1.08;
+  color: var(--paper);
+  margin-bottom: 64px;
+}
+.section-title .accent { color: var(--heka); }
+.section-title .gold   { color: var(--copper-l); font-style: italic; }
+.section-line {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, var(--heka), transparent);
+  margin-bottom: 24px;
+}
+
+/* ── Placeholder (image frame) ── */
+.ph {
+  position: relative;
+  background:
+    linear-gradient(135deg,rgba(0,191,255,.03),rgba(184,115,51,.03)),
+    repeating-linear-gradient(135deg,rgba(245,230,211,.03) 0 2px,transparent 2px 14px),
+    var(--ink-2);
+  border: 1px solid var(--line-s);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.ph-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--paper-m);
+  text-align: center;
+  padding: 14px 20px;
+  background: rgba(10,10,15,.75);
+  border: 1px solid var(--line);
+  position: relative; z-index: 1;
+}
+.ph-label small {
+  display: block; font-size: 9px; letter-spacing: .18em;
+  color: var(--paper-d); margin-top: 5px;
+}
+.ph-grid {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(rgba(245,230,211,.035) 1px,transparent 1px) 0 0/40px 40px,
+    linear-gradient(90deg,rgba(245,230,211,.035) 1px,transparent 1px) 0 0/40px 40px;
+}
+.screw {
+  position: absolute; width: 12px; height: 12px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,#C9892A 0%,#6e4318 70%,#2a1a08 100%);
+  box-shadow: inset 0 0 2px rgba(0,0,0,.6);
+}
+.screw::after {
+  content:""; position:absolute; top:50%; left:15%; right:15%; height:1.5px;
+  background:rgba(0,0,0,.7); transform:translateY(-50%) rotate(35deg); border-radius:2px;
+}
+.screw.tl{top:8px;left:8px} .screw.tr{top:8px;right:8px}
+.screw.bl{bottom:8px;left:8px} .screw.br{bottom:8px;right:8px}
+
+/* ── Cards / chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.chip {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; padding: 6px 14px;
+  border: 1px solid var(--line); color: var(--paper-m); background: var(--ink-3);
+}
+
+/* ─────────────────────────────────────────────
+   S1 · HERO
+───────────────────────────────────────────── */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+#hero-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+}
+.hero-keyart {
+  position: absolute;
+  top: -15%; left: 0; right: 0; bottom: -15%;
+  z-index: 0;
+  will-change: transform;
+}
+.hero-keyart .ph { border: none; width: 100%; height: 100%; }
+.hero-cinematic {
+  position: absolute; inset: 0; z-index: 2;
+  background:
+    linear-gradient(180deg,
+      rgba(4,5,10,.65) 0%,
+      rgba(4,5,10,.0)  28%,
+      rgba(4,5,10,.0)  50%,
+      rgba(4,5,10,.82) 76%,
+      rgba(4,5,10,1)   100%),
+    linear-gradient(90deg,
+      rgba(4,5,10,.45) 0%,
+      transparent 22%,
+      transparent 78%,
+      rgba(4,5,10,.45) 100%);
+}
+.hero-gear {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(0,191,255,.10);
+  pointer-events: none; z-index: 2;
+  top: 50%; left: 50%; transform: translate(-50%,-46%);
+  width: 900px; height: 900px;
+}
+.hero-gear::before {
+  content:""; position:absolute; inset:-200px;
+  border: 1px solid rgba(217,162,76,.07);
+  border-radius: 50%; border-style: dashed;
+}
+.hero-gear::after {
+  content:""; position:absolute; inset:120px;
+  border: 1px solid rgba(0,191,255,.18);
+  border-radius: 50%;
+}
+.hero-content {
+  position: relative; z-index: 5;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 20px;
+  padding: 0 40px;
+}
+.hero-badge {
+  font-family: var(--mono); font-size: 12px;
+  letter-spacing: .5em; text-transform: uppercase;
+  color: var(--copper-l);
+  padding: 9px 24px;
+  border: 1px solid rgba(217,162,76,.22);
+  background: rgba(10,10,15,.6);
+  backdrop-filter: blur(8px);
+  display: flex; gap: 16px; align-items: center;
+}
+.hero-badge .sep { color: var(--copper); font-size: 8px; opacity: .6; }
+.hero-title { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 8px 0; }
+.hero-heka {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(100px, 14vw, 220px);
+  line-height: .88;
+  letter-spacing: .14em;
+  color: var(--paper);
+  text-shadow:
+    0 0 80px rgba(0,191,255,.38),
+    0 0 200px rgba(0,191,255,.14),
+    0 4px 2px rgba(0,0,0,.7);
+  text-indent: .14em;
+}
+.hero-sub {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 3.5vw, 50px);
+  letter-spacing: .52em;
+  text-transform: uppercase;
+  color: var(--copper-l);
+  text-indent: .52em;
+}
+.hero-stamp-wrap {
+  display: flex; align-items: center; gap: 0; width: min(800px, 80vw);
+}
+.hero-stamp-wrap::before,
+.hero-stamp-wrap::after {
+  content:""; flex: 1; height: 1px;
+}
+.hero-stamp-wrap::before { background: linear-gradient(90deg, transparent, var(--heka)); }
+.hero-stamp-wrap::after  { background: linear-gradient(270deg, transparent, var(--heka)); }
+.hero-stamp {
+  flex-shrink: 0;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  letter-spacing: .75em; text-transform: uppercase;
+  color: var(--heka); padding: 11px 36px; text-indent: .75em;
+  border: 1px solid var(--heka);
+  background: rgba(0,191,255,.05);
+  box-shadow: 0 0 50px rgba(0,191,255,.1), inset 0 0 20px rgba(0,191,255,.04);
+  position: relative;
+}
+.hero-stamp::before,.hero-stamp::after {
+  content:"◈"; position:absolute; top:50%; transform:translateY(-50%);
+  font-size:8px; color:var(--heka); letter-spacing:0; text-indent:0;
+}
+.hero-stamp::before{left:10px} .hero-stamp::after{right:10px}
+.hero-tagline {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(16px, 1.6vw, 22px);
+  line-height: 1.55; color: var(--paper-m);
+  max-width: 700px;
+}
+.hero-platforms { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hero-platform {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .26em;
+  text-transform: uppercase; color: var(--paper-d);
+  padding: 6px 14px; border: 1px solid var(--line);
+  background: rgba(10,10,15,.5);
+}
+.hero-platform.future { color: var(--copper-l); border-color: rgba(217,162,76,.22); opacity: .7; }
+.hero-cta {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 52px;
+  background: linear-gradient(135deg,rgba(0,191,255,.12),rgba(0,191,255,.05));
+  border: 1px solid var(--heka); color: var(--heka);
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  letter-spacing: .4em; text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 60px rgba(0,191,255,.1);
+  position: relative; overflow: hidden;
+}
+.hero-cta::before {
+  content:""; position:absolute; top:0; left:-130%;
+  width:80px; height:100%;
+  background: linear-gradient(90deg,transparent,rgba(0,191,255,.22),transparent);
+  animation: sheen 3.5s ease-in-out 2s infinite;
+}
+@keyframes sheen { 0%{left:-130%} 45%,100%{left:140%} }
+.hero-cta .heart { font-size: 20px; display: inline-block; animation: hbeat 1.8s ease-in-out infinite; }
+@keyframes hbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+.hero-author {
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: .3em; text-transform: uppercase; color: var(--paper-d);
+}
+.scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.scroll-hint-line {
+  width: 1px; height: 48px;
+  background: linear-gradient(180deg,var(--heka),transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine { 0%,100%{opacity:.3;transform:scaleY(.5)} 50%{opacity:1;transform:scaleY(1)} }
+/* tw cursor */
+.tw-cur {
+  display: inline-block; width: .06em; height: .82em;
+  background: var(--heka); margin-left: 6px; vertical-align: -.1em;
+  box-shadow: 0 0 18px var(--heka-g);
+  animation: blink .9s steps(2,start) infinite;
+}
+@keyframes blink { 50%{opacity:0} }
+
+/* ─────────────────────────────────────────────
+   S2 · EL PROBLEMA
+───────────────────────────────────────────── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+  margin-bottom: 72px;
+}
+.stat-card {
+  padding: 32px 28px;
+  border: 1px solid var(--line-s);
+  background: linear-gradient(135deg,rgba(0,191,255,.04),transparent);
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background: var(--heka);
+}
+.stat-card.gold::before { background: var(--copper-l); }
+.stat-card.danger::before { background: var(--danger); }
+.stat-num {
+  font-family: var(--display);
+  font-size: clamp(40px,5vw,72px);
+  font-weight: 700;
+  color: var(--heka);
+  line-height: 1;
+}
+.stat-card.gold .stat-num { color: var(--copper-l); }
+.stat-unit { font-family: var(--mono); font-size: 18px; color: var(--paper-m); margin-top: -6px; }
+.stat-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--paper-d); margin-top: 8px;
+}
+.problema-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+}
+.problema-text { display: flex; flex-direction: column; gap: 20px; }
+.problema-text p {
+  font-family: var(--serif); font-size: 19px; line-height: 1.65; color: var(--paper-m);
+}
+.problema-text p strong { color: var(--paper); font-weight: 600; font-style: italic; }
+.problema-text p em { color: var(--heka); font-style: italic; }
+.market-table { border: 1px solid var(--line-s); background: var(--ink-2); margin-top: 8px; }
+.mt-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px; border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 12px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.mt-row:last-child { border-bottom: none; }
+.mt-v { font-family: var(--display); font-size: 18px; color: var(--paper); }
+.mt-v.heka { color: var(--heka); }
+.mt-v.copper { color: var(--copper-l); }
+.problema-visual { height: 420px; }
+.problema-visual .ph { height: 100%; }
+
+/* ─────────────────────────────────────────────
+   S3 · EL MUNDO
+───────────────────────────────────────────── */
+.mundo-grid {
+  display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px;
+}
+.map-frame { position: relative; height: 520px; }
+.map-frame .ph { height: 100%; }
+.compass {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+  color: var(--copper-l); opacity: .8;
+  width: 64px; height: 64px;
+  border: 1px solid rgba(217,162,76,.3);
+  display: grid; place-items: center;
+  background: rgba(10,10,15,.7);
+}
+.zones-list { display: flex; flex-direction: column; gap: 16px; }
+.zone-card {
+  display: grid; grid-template-columns: 64px 1fr; gap: 16px;
+  padding: 18px 20px; border: 1px solid var(--line);
+  background: linear-gradient(90deg,rgba(0,191,255,.04),transparent 60%);
+  border-left: 2px solid var(--heka);
+}
+.zone-card.aton {
+  border-left-color: var(--danger);
+  background: linear-gradient(90deg,rgba(196,74,58,.05),transparent 60%);
+}
+.zone-num {
+  font-family: var(--mono); font-size: 28px; font-weight: 500;
+  color: var(--copper-l); line-height: 1; padding-top: 4px;
+}
+.zone-biome {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--heka); margin-bottom: 4px;
+}
+.zone-card.aton .zone-biome { color: var(--danger); }
+.zone-card h3 {
+  font-family: var(--display); font-size: 20px;
+  letter-spacing: .04em; margin-bottom: 4px;
+}
+.zone-card p {
+  font-family: var(--serif); font-size: 15px; line-height: 1.55; color: var(--paper-m);
+}
+
+/* ─────────────────────────────────────────────
+   S4 · PROTAGONISTA
+───────────────────────────────────────────── */
+.prot-grid {
+  display: grid; grid-template-columns: 380px 1fr; gap: 72px; align-items: start;
+}
+.prot-portrait { height: 480px; }
+.prot-portrait .ph { height: 100%; }
+.prot-info { display: flex; flex-direction: column; gap: 28px; padding-top: 8px; }
+.prot-quote {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(22px,2.5vw,38px); line-height: 1.25;
+  color: var(--paper); position: relative;
+  padding-left: 32px;
+}
+.prot-quote::before {
+  content:"\201C";
+  position: absolute; left: -12px; top: -20px;
+  font-size: 120px; color: var(--heka); opacity: .35;
+  font-family: var(--display); line-height: 1;
+}
+.prot-attrib {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--copper-l); margin-top: -12px;
+}
+.prot-stats {
+  display: flex; gap: 0;
+  border: 1px solid var(--line-s); overflow: hidden;
+}
+.prot-stat {
+  flex: 1; padding: 16px 18px;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.prot-stat:last-child { border-right: none; }
+.prot-stat-v {
+  font-family: var(--display); font-size: 28px;
+  font-weight: 600; color: var(--copper-l);
+}
+.prot-stat-k {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--paper-d);
+}
+.prot-desc {
+  font-family: var(--serif); font-size: 19px; line-height: 1.65; color: var(--paper-m);
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: linear-gradient(90deg,rgba(0,191,255,.04),transparent);
+  border-left: 2px solid var(--heka);
+}
+.prot-desc em { color: var(--heka); font-style: italic; }
+.prot-footer {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--copper-l);
+  padding-top: 12px; border-top: 1px solid var(--line);
+}
+
+/* ─────────────────────────────────────────────
+   S5 · MECÁNICA HEKA
+───────────────────────────────────────────── */
+.mech-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
+}
+/* HUD */
+.hud {
+  border: 1px solid var(--line-s);
+  background: radial-gradient(circle at 50% 35%,rgba(0,191,255,.07),transparent 60%),var(--ink-2);
+  padding: 32px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+.hud-header {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
+}
+.hud-header .l { color: var(--heka); }
+.hud-header .r { color: var(--paper-d); }
+.hud-ring { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+.hud-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: rgba(245,230,211,.07); stroke-width: 14; }
+.ring-tick { stroke: rgba(217,162,76,.65); stroke-width: 2; }
+.ring-fg {
+  fill: none; stroke: var(--heka); stroke-width: 14;
+  stroke-linecap: round;
+  stroke-dasharray: 770; stroke-dashoffset: 770;
+  filter: drop-shadow(0 0 10px var(--heka-g));
+  transition: stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1);
+}
+.ring-fg.animated { stroke-dashoffset: 193; } /* 75% of 770 */
+.ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-num {
+  font-family: var(--display); font-size: 64px; font-weight: 700;
+  color: var(--paper); line-height: 1;
+}
+.ring-pct { font-family: var(--mono); font-size: 24px; color: var(--heka); }
+.ring-lab {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .38em;
+  text-transform: uppercase; color: var(--paper-d); margin-top: 4px;
+}
+.hud-bar { display: flex; flex-direction: column; gap: 8px; }
+.hud-bar-meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.hud-bar-meta b { color: var(--heka); }
+.hud-track {
+  height: 22px; background: rgba(245,230,211,.05);
+  border: 1px solid var(--line); position: relative; overflow: hidden;
+}
+.hud-fill {
+  position: absolute; inset: 0 100% 0 0;
+  background: linear-gradient(90deg,var(--heka-d),var(--heka));
+  box-shadow: 0 0 20px var(--heka-g);
+  transition: inset 2s cubic-bezier(.4,0,.2,1) .4s;
+}
+.hud-fill.animated { inset: 0 30% 0 0; }
+.hud-scan {
+  position: absolute; top:0; bottom:0; width:50px;
+  background: linear-gradient(90deg,transparent,rgba(245,230,211,.45),transparent);
+  animation: scan 2.4s linear infinite;
+}
+@keyframes scan { 0%{left:-50px} 100%{left:100%} }
+.hud-ticks {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; color: var(--paper-d);
+}
+.hud-substats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;
+  padding-top: 8px; border-top: 1px solid var(--line);
+}
+.hud-sub {
+  display: flex; flex-direction: column; gap: 3px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.hud-sub .v { font-family: var(--display); font-size: 20px; color: var(--paper); }
+.hud-sub .v.h { color: var(--heka); }
+.hud-sub .v.c { color: var(--copper-l); }
+/* mech list */
+.mech-list { display: flex; flex-direction: column; gap: 22px; padding-top: 8px; }
+.mech-item {
+  display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: start;
+}
+.mech-ico {
+  width: 52px; height: 52px; flex-shrink: 0;
+  border: 1px solid var(--copper);
+  display: grid; place-items: center;
+  font-family: var(--mono); font-size: 20px; color: var(--copper-l);
+  position: relative;
+}
+.mech-ico::before {
+  content:""; position:absolute; inset:4px;
+  border:1px solid rgba(217,162,76,.28);
+}
+.mech-item h3 {
+  font-family: var(--display); font-size: 19px;
+  margin-bottom: 5px; letter-spacing: .04em;
+}
+.mech-item p {
+  font-family: var(--serif); font-size: 15px; line-height: 1.6; color: var(--paper-m);
+}
+.mech-item p em { color: var(--heka); font-style: italic; }
+.mech-item p strong { color: var(--paper); font-style: italic; }
+
+/* ─────────────────────────────────────────────
+   S6 · LOS FINALES
+───────────────────────────────────────────── */
+.finales-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
+}
+.final-card {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); background: var(--ink-2);
+  overflow: hidden; position: relative;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.final-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+.final-portrait {
+  height: 260px; display: grid; place-items: center; position: relative;
+}
+.final-num {
+  font-family: var(--display); font-size: 80px; line-height: 1;
+  font-weight: 700;
+}
+.final-info { padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.final-badge {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .26em;
+  text-transform: uppercase;
+}
+.final-card h3 {
+  font-family: var(--display); font-size: 20px; letter-spacing: .03em; margin-top: 2px;
+}
+.final-card p {
+  font-family: var(--serif); font-size: 14px; line-height: 1.5; color: var(--paper-m);
+  flex: 1;
+}
+.final-cond {
+  margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+
+/* ─────────────────────────────────────────────
+   S7 · DEMO / CAPTURAS
+───────────────────────────────────────────── */
+.demo-layout {
+  display: grid; grid-template-columns: 1fr 280px; gap: 28px;
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  grid-template-rows: repeat(3,140px);
+  gap: 12px;
+}
+.demo-grid .ph { width: 100%; height: 100%; }
+.demo-grid .ph-a { grid-column:span 2; grid-row:span 2; }
+.demo-grid .ph-b { grid-column:span 2; }
+.demo-grid .ph-e { grid-column:span 2; }
+.demo-grid .ph-f { grid-column:span 2; }
+.demo-grid .ph-g { grid-column:span 2; }
+.demo-specs { display: flex; flex-direction: column; gap: 12px; }
+.spec-card {
+  padding: 16px 18px;
+  border: 1px solid var(--line-s);
+  background: var(--ink-2);
+}
+.spec-k {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--heka); margin-bottom: 5px;
+}
+.spec-v { font-family: var(--display); font-size: 17px; color: var(--paper); letter-spacing: .03em; }
+
+/* ─────────────────────────────────────────────
+   S8 · ARQUITECTURA TÉCNICA
+───────────────────────────────────────────── */
+.arch-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+}
+.tech-stack { display: flex; flex-direction: column; gap: 0; }
+.stack-row {
+  display: grid; grid-template-columns: 160px 1fr;
+  gap: 20px; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+}
+.stack-row:first-child { border-top: 1px solid var(--line); }
+.stack-k {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--copper-l);
+}
+.stack-v { font-family: var(--display); font-size: 18px; color: var(--paper); letter-spacing: .03em; }
+.stack-v small {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em;
+  color: var(--paper-d); margin-left: 10px;
+}
+.arch-numbers {
+  border: 1px solid var(--line-s); background: var(--ink-2);
+  padding: 28px;
+}
+.arch-numbers h3 {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--paper-d);
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+}
+.arch-nums-grid { display: flex; flex-direction: column; gap: 0; }
+.arch-num-row {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 16px; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+}
+.arch-num-row:last-child { border-bottom: none; }
+.arch-num-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--paper-m);
+}
+.arch-num-val {
+  font-family: var(--display); font-size: 24px; font-weight: 600;
+  color: var(--heka); text-align: center; min-width: 60px;
+}
+.arch-num-val.copper { color: var(--copper-l); }
+.arch-num-loc {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+  color: var(--paper-d); text-align: right;
+}
+.arch-badge {
+  margin-top: 16px; padding: 12px 16px;
+  border: 1px solid var(--heka);
+  background: rgba(0,191,255,.05);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--heka);
+  display: flex; justify-content: space-between;
+}
+
+/* ─────────────────────────────────────────────
+   S9 · CONTEXTO DE MERCADO
+───────────────────────────────────────────── */
+.market-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+}
+.waveform {
+  border: 1px solid var(--line-s); background: var(--ink-2);
+  padding: 28px; display: flex; flex-direction: column; gap: 16px;
+}
+.wf-meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.wf-bars {
+  flex: 1; min-height: 160px;
+  display: flex; align-items: center; gap: 3px;
+}
+.wf-bars span {
+  display: block; flex: 1;
+  background: var(--heka); opacity: .7;
+  animation: wave 1.6s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--heka-g);
+}
+@keyframes wave { 0%,100%{transform:scaleY(.4)} 50%{transform:scaleY(1)} }
+.wf-numbers {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  padding-top: 14px; border-top: 1px solid var(--line);
+}
+.wf-num-k {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--paper-d); margin-bottom: 4px;
+}
+.wf-num-v { font-family: var(--display); font-size: 28px; }
+.wf-num-sub { font-family: var(--mono); font-size: 10px; color: var(--paper-d); margin-top: 3px; }
+.tracklist { display: flex; flex-direction: column; gap: 12px; }
+.track-item {
+  display: grid; grid-template-columns: 36px 1fr auto;
+  gap: 16px; align-items: center;
+  padding: 14px 18px; border: 1px solid var(--line); background: var(--ink-2);
+  transition: background .2s;
+}
+.track-item:hover { background: rgba(0,191,255,.04); border-color: var(--heka); }
+.track-item.playing {
+  border-color: var(--heka);
+  background: linear-gradient(90deg,rgba(0,191,255,.08),transparent 80%);
+}
+.track-n { font-family: var(--mono); font-size: 14px; color: var(--copper-l); }
+.track-item.playing .track-n { color: var(--heka); }
+.track-item h3 { font-family: var(--display); font-size: 17px; margin-bottom: 3px; letter-spacing: .03em; }
+.track-role {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+.track-dur { font-family: var(--mono); font-size: 12px; color: var(--paper-m); }
+
+/* ─────────────────────────────────────────────
+   S10 · ESTADO ACTUAL
+───────────────────────────────────────────── */
+.estado-grid {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px;
+}
+.estado-left { display: flex; flex-direction: column; gap: 20px; }
+.dialog-mockup {
+  border: 1px solid var(--line-s); background: var(--ink-2);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.dialog-scene { height: 180px; position: relative; }
+.dialog-scene .ph { height: 100%; border: none; }
+.dialog-scene-tag {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--paper-d);
+  padding: 4px 8px; border: 1px solid var(--line); background: rgba(10,10,15,.75);
+}
+.dialog-box {
+  margin: 20px; border: 1px solid var(--copper);
+  background: rgba(10,10,15,.92); padding: 18px 22px 20px; position: relative;
+}
+.dialog-box::before {
+  content:""; position:absolute; inset:-1px;
+  border:1px solid rgba(217,162,76,.35); pointer-events:none;
+}
+.dialog-speaker {
+  position: absolute; top: -13px; left: 18px;
+  background: var(--ink); padding: 3px 10px;
+  font-family: var(--display); font-size: 16px; color: var(--copper-l);
+  letter-spacing: .08em; border: 1px solid var(--copper);
+}
+.dialog-text {
+  font-family: var(--serif); font-size: 17px; line-height: 1.55;
+  color: var(--paper); margin: 4px 0 14px;
+}
+.blink-cur {
+  display: inline-block; width: .4em; height: .85em;
+  background: var(--heka); vertical-align: -.08em; margin-left: 3px;
+  animation: blink .9s steps(2,start) infinite;
+}
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 11px 14px;
+  border: 1px solid var(--line); background: rgba(0,191,255,.03);
+  font-family: var(--serif); font-size: 16px; color: var(--paper-m);
+}
+.check-item .ck { font-family: var(--mono); font-size: 10px; color: var(--copper-l); padding: 3px 6px; border: 1px solid var(--copper); }
+.check-item .ok { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--heka); letter-spacing: .2em; }
+/* ratings panel */
+.estado-right { display: flex; flex-direction: column; gap: 20px; }
+.ratings-panel {
+  padding: 22px; border: 1px solid var(--line-s);
+  background: linear-gradient(90deg,rgba(0,191,255,.08),transparent 60%);
+  border-left: 2px solid var(--heka);
+}
+.ratings-panel h3 {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--paper-d); margin-bottom: 18px;
+}
+.rating-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+}
+.rating-row:last-child { border-bottom: none; }
+.rating-label { font-family: var(--display); font-size: 18px; }
+.rating-val { font-family: var(--display); font-size: 26px; font-weight: 600; color: var(--heka); }
+.rating-avg {
+  margin-top: 10px; text-align: right;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--copper-l);
+}
+.tester-quote {
+  padding: 22px;
+  border: 1px solid var(--line-s);
+  background: linear-gradient(90deg,rgba(217,162,76,.06),transparent 60%);
+  border-left: 2px solid var(--copper-l);
+}
+.tester-quote blockquote {
+  font-family: var(--serif); font-style: italic;
+  font-size: 20px; line-height: 1.55; color: var(--paper); margin-bottom: 12px;
+}
+.tester-quote cite {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--copper-l);
+}
+
+/* ─────────────────────────────────────────────
+   S11 · TRABAJO FUTURO
+───────────────────────────────────────────── */
+.timeline-wrap {
+  position: relative; margin: 0 0 72px 0;
+}
+.timeline-rail {
+  position: absolute; top: 28px; left: 28px; right: 28px;
+  height: 2px; background: var(--line-s); z-index: 0;
+}
+.timeline-rail::before,.timeline-rail::after {
+  content:""; position:absolute; top:50%;
+  width:12px; height:12px; border:1px solid var(--copper);
+  background:var(--ink); transform:translateY(-50%) rotate(45deg);
+}
+.timeline-rail::before { left:-12px; }
+.timeline-rail::after  { right:-12px; }
+.timeline-nodes {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  position: relative; z-index: 1;
+}
+.tl-node { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.tl-dot {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 1px solid var(--copper); background: var(--ink);
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 20px; color: var(--copper-l);
+  position: relative; z-index: 2;
+}
+.tl-dot::before {
+  content:""; position:absolute; inset:-8px;
+  border:1px solid rgba(217,162,76,.28); border-radius:50%;
+}
+.tl-node.current .tl-dot {
+  background: var(--heka); border-color: var(--heka); color: var(--ink);
+  box-shadow: 0 0 24px var(--heka-g);
+}
+.tl-node.current .tl-dot::before { border-color: rgba(0,191,255,.4); }
+.tl-body { text-align: center; padding: 0 12px; }
+.tl-phase {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--paper-d); margin-bottom: 5px;
+}
+.tl-body h3 {
+  font-family: var(--display); font-size: 20px; margin-bottom: 6px;
+}
+.tl-body p {
+  font-family: var(--serif); font-size: 14px; line-height: 1.5; color: var(--paper-m);
+}
+.timeline-stats {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
+}
+.ts-card {
+  padding: 24px; border: 1px solid var(--line); text-align: center;
+  background: linear-gradient(135deg,rgba(0,191,255,.04),transparent);
+}
+.ts-v {
+  font-family: var(--display); font-size: 48px; font-weight: 700;
+  color: var(--heka); line-height: 1;
+}
+.ts-k {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .28em;
+  text-transform: uppercase; color: var(--paper-d); margin-top: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   S12 · CIERRE
+───────────────────────────────────────────── */
+#cierre {
+  position: relative;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #0a1622 0%, #060810 60%, #04050a 100%);
+  padding: 120px 60px;
+}
+#cierre-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+}
+.cierre-vignette {
+  position: absolute; inset: 0; z-index: 2;
+  background: radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,.85) 100%);
+}
+.cierre-content { position: relative; z-index: 3; max-width: 1100px; }
+.cierre-pre {
+  font-family: var(--mono); font-size: 13px; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--copper-l);
+  margin-bottom: 40px; display: flex; align-items: center; gap: 18px;
+  justify-content: center;
+}
+.cierre-pre::before,.cierre-pre::after { content:"—"; color:var(--copper); }
+.cierre-quote {
+  font-family: var(--display); font-weight: 600; font-style: italic;
+  font-size: clamp(32px,4.5vw,80px);
+  line-height: 1.12; color: var(--paper);
+  text-shadow: 0 0 60px rgba(0,191,255,.18);
+  margin-bottom: 36px;
+}
+.cierre-quote .igh { color: var(--heka); font-style: normal; text-shadow: 0 0 80px var(--heka-g); }
+.cierre-igual {
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(24px,3vw,52px); color: var(--heka);
+  letter-spacing: .02em;
+  text-shadow: 0 0 40px var(--heka-g);
+  margin-bottom: 72px;
+}
+.cierre-sig { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.cierre-line {
+  width: 200px; height: 1px;
+  background: linear-gradient(90deg,transparent,var(--copper),transparent);
+}
+.cierre-name {
+  font-family: var(--display); font-size: 20px;
+  letter-spacing: .38em; text-transform: uppercase; color: var(--copper-l);
+}
+.cierre-meta {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--paper-d);
+}
+
+/* ── Prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .a { transition: opacity .3s ease !important; transform: none !important; filter: none !important; }
+  .hero-cta::before, .sheen { display: none; }
+  .ring-fg, .hud-fill { transition: none !important; }
+  .wf-bars span, .hud-scan { animation: none !important; }
+}
+
+/* ── Curtain reveal ── */
+section:not(#hero)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  z-index: 30;
+  transform: translateY(0);
+  transition: transform 1s cubic-bezier(.76,0,.24,1);
+  pointer-events: none;
+}
+section.alt:not(#hero)::before {
+  background: var(--ink-2);
+}
+/* Línea de barrido en el borde inferior de la cortina */
+section:not(#hero)::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--heka) 20%,
+    var(--copper-l) 50%,
+    var(--heka) 80%,
+    transparent 100%);
+  z-index: 31;
+  top: 0;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 1s cubic-bezier(.76,0,.24,1),
+              opacity .25s ease .85s;
+  pointer-events: none;
+  box-shadow: 0 0 18px 2px rgba(0,191,255,.5);
+}
+section:not(#hero).revealed::before {
+  transform: translateY(101%);
+}
+section:not(#hero).revealed::after {
+  transform: translateY(101%);
+  opacity: 0;
+}
+
+/* ── Variantes de animación (izq / der) ── */
+.a-l {
+  opacity: 0;
+  transform: translateX(-48px);
+  transition: opacity .8s cubic-bezier(.2,.7,.2,1),
+              transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.a-l.in { opacity: 1; transform: none; }
+.a-r {
+  opacity: 0;
+  transform: translateX(48px);
+  transition: opacity .8s cubic-bezier(.2,.7,.2,1),
+              transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.a-r.in { opacity: 1; transform: none; }
+.a-l[data-d="1"], .a-r[data-d="1"] { transition-delay: .1s; }
+.a-l[data-d="2"], .a-r[data-d="2"] { transition-delay: .2s; }
+.a-l[data-d="3"], .a-r[data-d="3"] { transition-delay: .3s; }
+.a-l[data-d="4"], .a-r[data-d="4"] { transition-delay: .4s; }
+
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  NAV                                     ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">HEKA<span>· Islas en Sombra</span></a>
+    <div class="nav-links">
+      <a href="#problema"    class="nav-link" data-sec="problema">El Juego</a>
+      <a href="#mecanica"    class="nav-link" data-sec="mecanica">Mecánica</a>
+      <a href="#demo"        class="nav-link" data-sec="demo">Demo</a>
+      <a href="#arquitectura" class="nav-link" data-sec="arquitectura">Técnico</a>
+      <a href="#mercado"     class="nav-link" data-sec="mercado">Mercado</a>
+      <a href="#estado"      class="nav-link" data-sec="estado">Estado</a>
+    </div>
+    <div class="nav-right">
+      <span class="nav-tag">GODOT 4.6</span>
+      <a href="#cierre" class="nav-cta">♥ Wishlist Steam</a>
+    </div>
+  </div>
+  <div class="nav-progress-bar" id="progress-bar"></div>
+</nav>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S1 · HERO / COMING SOON                ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="hero">
+  <div class="hero-keyart">
+    <img src="assets/p51_img1.jpeg" style="width:100%;height:100%;object-fit:cover;opacity:.6;" alt="HEKA — Menú Principal">
+  </div>
+  <div class="hero-cinematic"></div>
+  <div class="hero-gear"></div>
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-badge a">
+      <span class="sep">◆</span>
+      TRABAJO FIN DE CICLO · DAM · CEU FP VALENCIA · 2024 – 2025
+      <span class="sep">◆</span>
+    </div>
+
+    <div class="hero-title">
+      <span class="hero-heka a" id="hero-typewriter" data-d="1">HEKA</span>
+      <span class="hero-sub a" data-d="2">Islas en Sombra</span>
+    </div>
+
+    <div class="hero-stamp-wrap a" data-d="3">
+      <div class="hero-stamp">COMING SOON</div>
+    </div>
+
+    <p class="hero-tagline a" data-d="4">
+      Una novela visual donde tus decisiones no tienen respuesta — solo consecuencias.
+    </p>
+
+    <div class="hero-platforms a" data-d="5">
+      <span class="hero-platform">⊞ WINDOWS</span>
+      <span class="hero-platform">◈ LINUX</span>
+      <span class="hero-platform">⌘ MAC</span>
+      <span class="hero-platform future">📱 ANDROID · PRÓXIMAMENTE</span>
+    </div>
+
+    <button class="hero-cta a" data-d="6">
+      <span class="heart">♥</span>
+      AÑADIR A LISTA DE DESEOS EN STEAM
+    </button>
+
+    <div class="hero-author a" data-d="7">
+      JOSE M. ROMERO NIEVES · JIMMYROM1 &nbsp;·&nbsp; GODOT 4.6 · JUGABLE · 10 CAPS + PRÓLOGO
+    </div>
+  </div>
+
+  <div class="scroll-hint a" data-d="7">
+    <div class="scroll-hint-line"></div>
+    <span>DESPLÁZATE</span>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S2 · EL PROBLEMA                       ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="problema" class="section">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Por qué existe Heka</div>
+    <h2 class="section-title a" data-d="2">
+      <span class="accent">500 millones</span> de hablantes.<br>
+      Casi cero novelas visuales en español.
+    </h2>
+
+    <div class="stat-row">
+      <div class="stat-card a" data-d="1">
+        <div class="stat-num" data-count="500">0</div>
+        <div class="stat-unit">M+</div>
+        <div class="stat-label">Hispanohablantes</div>
+      </div>
+      <div class="stat-card a" data-d="2" style="border-top-color:var(--copper-l)">
+        <div class="stat-num" style="color:var(--copper-l)">≈0</div>
+        <div class="stat-label">Competencia directa en español</div>
+      </div>
+      <div class="stat-card a" data-d="3">
+        <div class="stat-num" data-count-dec="9.1">0</div>
+        <div class="stat-unit">% CAGR</div>
+        <div class="stat-label">Crecimiento Mercado VN 2024–2035</div>
+      </div>
+      <div class="stat-card gold a" data-d="4">
+        <div class="stat-num" data-count="29">0</div>
+        <div class="stat-label">Ventas para el break-even en Steam</div>
+      </div>
+    </div>
+
+    <div class="problema-grid">
+      <div class="problema-text a" data-d="2">
+        <p>El mercado global de novelas visuales crece al <strong>9,1% CAGR</strong> hacia los <strong>3.000 M$</strong> en 2035. Una búsqueda de <em>«visual novel español»</em> en Steam devuelve casi solo traducciones del japonés.</p>
+        <p><strong>Heka cubre ese hueco</strong>: VN original en castellano, con mecánicas propias y minijuegos integrados narrativamente.</p>
+        <div class="market-table">
+          <div class="mt-row"><span>Mercado VN 2024</span><span class="mt-v">1.159 M $</span></div>
+          <div class="mt-row"><span>Proyección 2035</span><span class="mt-v heka">3.000 M $</span></div>
+          <div class="mt-row"><span>Break-even Steam</span><span class="mt-v heka">29 ventas a 4,99 $</span></div>
+          <div class="mt-row"><span>Fee de entrada Steam</span><span class="mt-v copper">100 $</span></div>
+        </div>
+        <div class="chips">
+          <span class="chip">Demanda latente</span>
+          <span class="chip">Sin competencia directa</span>
+          <span class="chip">VN original en ES</span>
+          <span class="chip">Mecánicas propias</span>
+          <span class="chip">Minijuegos integrados</span>
+        </div>
+      </div>
+      <div class="problema-visual a" data-d="3">
+        <div class="ph" style="height:420px;">
+          <div class="ph-grid"></div>
+          <span class="screw tl"></span><span class="screw tr"></span>
+          <span class="screw bl"></span><span class="screw br"></span>
+          <div class="ph-label">CAPTURA · STEAM SEARCH<small>«visual novel español» — solo traducciones del japonés</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S3 · EL MUNDO                          ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="mundo" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Worldbuilding</div>
+    <h2 class="section-title a" data-d="2">
+      Una ciudad flotante. Tres zonas. <span class="gold">Un secreto.</span>
+    </h2>
+    <div class="mundo-grid">
+      <div class="map-frame a" data-d="2">
+        <img src="assets/p58_img1.jpeg" style="width:100%;height:520px;object-fit:cover;border-radius:4px;" alt="Mapa 2D Old Venice">
+        <div class="compass">N</div>
+      </div>
+      <div class="zones-list a-r" data-d="3">
+        <div class="zone-card a" data-d="2">
+          <div class="zone-num">I</div>
+          <div>
+            <div class="zone-biome">ZONA ALTA · CONSORCIO</div>
+            <h3>Los privilegiados</h3>
+            <p>Jardines hidropónicos, aire filtrado, luz natural. No saben cómo se sostiene la ciudad — o eligen no saberlo.</p>
+          </div>
+        </div>
+        <div class="zone-card a" data-d="3">
+          <div class="zone-num">II</div>
+          <div>
+            <div class="zone-biome">ZONA MEDIA · TÉCNICOS</div>
+            <h3>La mayoría silenciosa</h3>
+            <p>Mecánicos con licencia, comerciantes. Hacen funcionar el sistema y miran hacia otro lado.</p>
+          </div>
+        </div>
+        <div class="zone-card a" data-d="4">
+          <div class="zone-num">III</div>
+          <div>
+            <div class="zone-biome">ZONA BAJA · INDUSTRIA</div>
+            <h3>Aquí vive Alanda</h3>
+            <p>Luz azul artificial perpetua. Heka industrial en el aire. Mecánicos sin licencia. Desguazadores.</p>
+          </div>
+        </div>
+        <div class="zone-card aton a" data-d="5">
+          <div class="zone-num">⚠</div>
+          <div>
+            <div class="zone-biome">EL PROYECTO ATÓN · LA VERDAD BAJO LA CIUDAD</div>
+            <h3>Personas como combustible</h3>
+            <p>Usadas como conductoras orgánicas de Heka en dolor constante. <em>Lira es la Antena 12</em>. Las once anteriores no duraron dos años. Ella lleva tres.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S4 · LA PROTAGONISTA                   ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="protagonista" class="section">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Su voz</div>
+    <h2 class="section-title a" data-d="2">
+      Alanda — mecánica <span class="accent">sin licencia</span>, hermana de la Antena 12.
+    </h2>
+    <div class="prot-grid">
+      <div class="a" data-d="2">
+        <div class="prot-portrait">
+          <img src="assets/p51_img2.jpeg" style="width:100%;height:100%;object-fit:cover;border-radius:4px;" alt="Alanda — motor de diálogos">
+        </div>
+      </div>
+      <div class="prot-info a-r" data-d="3">
+        <div class="prot-quote a" data-d="2">
+          «No quiero salvar el mundo. Quiero sacar a mi hermana de esa máquina antes de que deje de reconocerme.»
+        </div>
+        <div class="prot-attrib a" data-d="3">— Alanda, Capítulo 1</div>
+
+        <div class="prot-stats a" data-d="3">
+          <div class="prot-stat">
+            <div class="prot-stat-v">23</div>
+            <div class="prot-stat-k">Años</div>
+          </div>
+          <div class="prot-stat">
+            <div class="prot-stat-v" style="font-size:20px">Zona Baja</div>
+            <div class="prot-stat-k">Origen</div>
+          </div>
+          <div class="prot-stat">
+            <div class="prot-stat-v" style="font-size:20px">Sin</div>
+            <div class="prot-stat-k">Licencia</div>
+          </div>
+        </div>
+
+        <div class="prot-desc a" data-d="4">
+          Voz directa, seca, humor negro.<br>
+          Cuando llora, lo hace sola. <em>El jugador no lo ve.</em>
+        </div>
+        <div class="prot-footer a" data-d="5">
+          10 capítulos + prólogo → tus decisiones
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S5 · MECÁNICA HEKA                     ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="mecanica" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Lo más original del proyecto</div>
+    <h2 class="section-title a" data-d="2">
+      <span class="accent">Sincronía Heka</span> — un espejo, no un juez.
+    </h2>
+    <div class="mech-grid">
+      <div class="hud a" data-d="2">
+        <div class="hud-header">
+          <span class="l">◊ SINCRONÍA HEKA</span>
+          <span class="r">ACUMULATIVO · SIN FEEDBACK</span>
+        </div>
+        <div class="hud-ring">
+          <svg viewBox="0 0 280 280" class="hud-ring-svg">
+            <circle class="ring-bg" cx="140" cy="140" r="122"/>
+            <g class="ring-tick">
+              <line x1="140" y1="8"   x2="140" y2="24"/>
+              <line x1="272" y1="140" x2="256" y2="140"/>
+              <line x1="140" y1="272" x2="140" y2="256"/>
+              <line x1="8"   y1="140" x2="24"  y2="140"/>
+              <line x1="234" y1="46"  x2="222" y2="58"/>
+              <line x1="234" y1="234" x2="222" y2="222"/>
+              <line x1="46"  y1="234" x2="58"  y2="222"/>
+              <line x1="46"  y1="46"  x2="58"  y2="58"/>
+            </g>
+            <circle class="ring-fg" cx="140" cy="140" r="122"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-num">75<span class="ring-pct">%</span></div>
+            <div class="ring-lab">Sincronía actual</div>
+          </div>
+        </div>
+        <div class="hud-bar">
+          <div class="hud-bar-meta">
+            <span>RELACIÓN · ARLONG</span><b>42 / 60</b>
+          </div>
+          <div class="hud-track">
+            <div class="hud-fill"></div>
+            <div class="hud-scan"></div>
+          </div>
+          <div class="hud-ticks">
+            <span>0</span><span>15</span><span>30</span><span>45</span><span>60</span>
+          </div>
+        </div>
+        <div class="hud-substats">
+          <div class="hud-sub">Decisiones<div class="v h">10</div></div>
+          <div class="hud-sub">Flags activas<div class="v c">17</div></div>
+          <div class="hud-sub">Escenas vistas<div class="v">128</div></div>
+        </div>
+      </div>
+
+      <div class="mech-list">
+        <div class="mech-item a" data-d="2">
+          <div class="mech-ico">◊</div>
+          <div>
+            <h3>Espejo moral, no báscula</h3>
+            <p>El sistema acumula variables y flags <strong>sin juzgar</strong>. Sin «+15 buena persona». Sin sonidos de aprobación. Solo registra.</p>
+          </div>
+        </div>
+        <div class="mech-item a" data-d="3">
+          <div class="mech-ico">⌬</div>
+          <div>
+            <h3>Consecuencias retardadas</h3>
+            <p>La decisión del Cap. 1 se manifiesta en el Cap. 5 — cuando un personaje reacciona distinto, o una puerta deja de abrirse.</p>
+          </div>
+        </div>
+        <div class="mech-item a" data-d="4">
+          <div class="mech-ico">⟁</div>
+          <div>
+            <h3>4 variables + flags booleanos</h3>
+            <p><em>sincronia_heka</em> · <em>relacion_arlong</em> · <em>relacion_selene</em> · <em>jax_confianza</em>. Todas con clamp + señal <em>stats_changed</em>.</p>
+          </div>
+        </div>
+        <div class="mech-item a" data-d="5">
+          <div class="mech-ico">◇</div>
+          <div>
+            <h3>Diálogo dinámico</h3>
+            <p>Las respuestas se reescriben según el estado actual. El mundo reacciona a quién has sido — no a un score visible.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S6 · LOS CUATRO FINALES                ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="finales" class="section">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Lo que cuesta cada uno</div>
+    <h2 class="section-title a" data-d="2">
+      Cuatro finales. <span class="accent">Uno está escondido.</span>
+    </h2>
+    <div class="finales-grid">
+      <div class="final-card a" data-d="1">
+        <div class="final-portrait" style="background:linear-gradient(135deg,#2a0a0e,#6b1a1a)">
+          <div class="final-num" style="color:#c44a3a;text-shadow:0 0 40px rgba(196,74,58,.5)">01</div>
+        </div>
+        <div class="final-info">
+          <div class="final-badge" style="color:#c44a3a">🔴 FINAL ROJO</div>
+          <h3>El Silencio del Metal</h3>
+          <p>Alanda se rinde al sistema. Old Venice sigue flotando. Lira, no.</p>
+          <div class="final-cond"><span>Sincronía</span><b style="color:#c44a3a">&lt; 40</b></div>
+        </div>
+      </div>
+      <div class="final-card a" data-d="2">
+        <div class="final-portrait" style="background:linear-gradient(135deg,#2a1f0a,#6b5a1a)">
+          <div class="final-num" style="color:var(--copper-l);text-shadow:0 0 40px rgba(217,162,76,.5)">02</div>
+        </div>
+        <div class="final-info">
+          <div class="final-badge" style="color:var(--copper-l)">🟡 FINAL AMARILLO</div>
+          <h3>Verdad Rota</h3>
+          <p>«La verdad no nos hizo libres, solo nos hizo huérfanos.»</p>
+          <div class="final-cond"><span>Sincronía</span><b style="color:var(--copper-l)">40 – 74</b></div>
+        </div>
+      </div>
+      <div class="final-card a" data-d="3">
+        <div class="final-portrait" style="background:linear-gradient(135deg,#0a2a1a,#1a6b3a)">
+          <div class="final-num" style="color:#4ec48a;text-shadow:0 0 40px rgba(78,196,138,.5)">03</div>
+        </div>
+        <div class="final-info">
+          <div class="final-badge" style="color:#4ec48a">🟢 FINAL VERDE</div>
+          <h3>Heka Liberada</h3>
+          <p>«El metal ha dejado de llorar. Somos humanos otra vez.»</p>
+          <div class="final-cond"><span>Sincronía</span><b style="color:#4ec48a">≥ 75</b></div>
+        </div>
+      </div>
+      <div class="final-card a" data-d="4">
+        <div class="final-portrait" style="background:linear-gradient(135deg,#0a1a2a,#1a4a6b);position:relative">
+          <div class="final-num" style="color:var(--heka);text-shadow:0 0 40px var(--heka-g);letter-spacing:.1em">??</div>
+          <div style="position:absolute;bottom:12px;font-family:var(--mono);font-size:10px;letter-spacing:.4em;color:var(--heka);opacity:.7">SECRETO</div>
+        </div>
+        <div class="final-info">
+          <div class="final-badge" style="color:var(--heka)">🔵 FINAL AZUL</div>
+          <h3>El Decimotercer Sujeto</h3>
+          <p>«No hay monstruos en esta historia.» archivo_completo = true.</p>
+          <div class="final-cond"><span>Condición</span><b style="color:var(--heka)">archivo_completo</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S7 · DEMO / CAPTURAS                   ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="demo" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">El juego, en pantalla</div>
+    <h2 class="section-title a" data-d="2">
+      Capturas reales. <span class="gold">Aquí pulso play.</span>
+    </h2>
+    <div class="demo-layout">
+      <div class="demo-grid a" data-d="2">
+        <div class="ph-a" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p51_img2.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Motor de diálogos — Alanda neutra en el taller"></div>
+        <div class="ph-b" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p53_img3.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Pantalla de decisión activa"></div>
+        <div class="ph-c" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p56_img1.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Puzzle cables — Bézier en progreso"></div>
+        <div class="ph-d" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p57_img1.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Puzzle tuberías — grid 6x6"></div>
+        <div class="ph-e" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p58_img1.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Mapa 2D Old Venice"></div>
+        <div class="ph-f" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p54_img1.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="HUD — Sincronía Heka + corazones Arlong"></div>
+        <div class="ph-g" style="overflow:hidden;border-radius:4px;border:1px solid var(--line-s);"><img src="assets/p54_img2.jpeg" style="width:100%;height:100%;object-fit:cover;display:block;" alt="Sistema de guardado — 4 slots"></div>
+      </div>
+      <div class="demo-specs a-r" data-d="3">
+        <div class="spec-card"><div class="spec-k">Resolución</div><div class="spec-v">1280 × 720</div></div>
+        <div class="spec-card"><div class="spec-k">Renderer</div><div class="spec-v">GL Compat.</div></div>
+        <div class="spec-card"><div class="spec-k">Build</div><div class="spec-v">Win · Linux · Mac</div></div>
+        <div class="spec-card" style="border-color:var(--heka);background:rgba(0,191,255,.05)">
+          <div class="spec-k" style="color:var(--heka)">Aquí</div>
+          <div class="spec-v">Pulso play</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S8 · ARQUITECTURA TÉCNICA              ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="arquitectura" class="section">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Cómo está hecho</div>
+    <h2 class="section-title a" data-d="2">
+      <span class="accent">435 escenas JSON.</span> Dos autoloads. Cero hardcode.
+    </h2>
+    <div class="arch-grid">
+      <div class="tech-stack a-l" data-d="2">
+        <div class="stack-row"><span class="stack-k">Motor</span><span class="stack-v">Godot 4.6 + GDScript 2.0 <small>tipado estático</small></span></div>
+        <div class="stack-row"><span class="stack-k">Datos</span><span class="stack-v">3 archivos JSON <small>scenes(435) · overlay(12) · objects(10)</small></span></div>
+        <div class="stack-row"><span class="stack-k">Singletons</span><span class="stack-v">GameState + DBManager <small>vars + flags + stats_changed</small></span></div>
+        <div class="stack-row"><span class="stack-k">Patrón clave</span><span class="stack-v">Observer <small>stats_changed → HUD</small></span></div>
+        <div class="stack-row"><span class="stack-k">Minijuegos</span><span class="stack-v">2 integrados <small>Bézier drag&drop · BFS bidireccional</small></span></div>
+        <div class="stack-row"><span class="stack-k">Migración</span><span class="stack-v">JavaFX / CSV → Godot / JSON <small>documentada en commits</small></span></div>
+        <div class="stack-row"><span class="stack-k">VCS</span><span class="stack-v">Git + GitHub <small>jimmyrom1 / Heka-Game</small></span></div>
+      </div>
+      <div class="arch-numbers a-r" data-d="2">
+        <h3>Cifras del proyecto</h3>
+        <div class="arch-nums-grid">
+          <div class="arch-num-row"><span class="arch-num-label">Grafo de escenas</span><span class="arch-num-val">435</span><span class="arch-num-loc">scenes.json</span></div>
+          <div class="arch-num-row"><span class="arch-num-label">Puntos de decisión</span><span class="arch-num-val">12</span><span class="arch-num-loc">decisions_overlay.json</span></div>
+          <div class="arch-num-row"><span class="arch-num-label">Coleccionables</span><span class="arch-num-val copper">10/6</span><span class="arch-num-loc">objects_seed.json</span></div>
+          <div class="arch-num-row"><span class="arch-num-label">Capítulos / finales</span><span class="arch-num-val">10 + 4</span><span class="arch-num-loc">prólogo · endings</span></div>
+          <div class="arch-num-row"><span class="arch-num-label">Assets totales</span><span class="arch-num-val copper">~150</span><span class="arch-num-loc">bg · sprites · audio</span></div>
+        </div>
+        <div class="arch-badge">
+          <span>▌ ARQUITECTURA REUTILIZABLE</span><span>ESCALABLE · MIT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S9 · CONTEXTO DE MERCADO               ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="mercado" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Más allá del TFG</div>
+    <h2 class="section-title a" data-d="2">
+      El mercado <span class="accent">crece al 9%</span>. La competencia en español, no.
+    </h2>
+    <div class="market-layout">
+      <div class="waveform a" data-d="2">
+        <div class="wf-meta"><span>MERCADO VN GLOBAL · 2024 → 2035</span><span>CAGR 9,1 %</span></div>
+        <div class="wf-bars" id="wf-bars"></div>
+        <div class="wf-meta"><span style="color:var(--copper-l)">1.159 M $ (2024)</span><span style="color:var(--heka)">3.000 M $ (2035)</span></div>
+        <div class="wf-numbers">
+          <div><div class="wf-num-k">Steam · break-even</div><div class="wf-num-v" style="color:var(--heka)">29 ventas</div><div class="wf-num-sub">a 4,99 $ · fee 100 $</div></div>
+          <div><div class="wf-num-k">Competencia ES</div><div class="wf-num-v" style="color:var(--copper-l)">≈ 0</div><div class="wf-num-sub">solo traducciones en Steam</div></div>
+        </div>
+      </div>
+      <div class="tracklist a-r" data-d="3">
+        <div class="track-item"><div class="track-n">①</div><div><h3>Doki Doki Literature Club</h3><div class="track-role">VN · INGLÉS · GRATIS · 3M+ DESCARGAS</div></div><div class="track-dur">PC</div></div>
+        <div class="track-item"><div class="track-n">②</div><div><h3>Omori</h3><div class="track-role">VN-RPG · INGLÉS · MÚLTIPLES FINALES</div></div><div class="track-dur">PC</div></div>
+        <div class="track-item"><div class="track-n">③</div><div><h3>Undertale</h3><div class="track-role">RPG · MORAL EN COMBATE · 3 RUTAS</div></div><div class="track-dur">PC</div></div>
+        <div class="track-item playing"><div class="track-n">▶</div><div><h3>HEKA: Islas en Sombra</h3><div class="track-role">VN · ESPAÑOL · ESPEJO MORAL · 4 FINALES</div></div><div class="track-dur">PC</div></div>
+        <div class="track-item"><div class="track-n">·</div><div><h3>Brotato · Buckshot Roulette</h3><div class="track-role">GODOT · 6,9 M€ · 6,1 M€ · INDIE HITS</div></div><div class="track-dur">REF</div></div>
+        <div class="track-item"><div class="track-n">·</div><div><h3>Godot en Steam 2025</h3><div class="track-role">SUPERA TODO 2024 EN 8 MESES</div></div><div class="track-dur">+++</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S10 · ESTADO ACTUAL                    ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="estado" class="section">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Dónde está el proyecto hoy</div>
+    <h2 class="section-title a" data-d="2">
+      MVP cerrado. Beta testeado. <span class="accent">Jugable de inicio a fin.</span>
+    </h2>
+    <div class="estado-grid">
+      <div class="estado-left">
+        <div class="dialog-mockup a" data-d="2">
+          <div class="dialog-scene">
+            <img src="assets/p54_img1.jpeg" style="width:100%;height:100%;object-fit:cover;" alt="HUD en partida — Godot 4.6">
+            <div class="dialog-scene-tag">CONSOLA · GODOT 4.6 · BUILD GREEN</div>
+          </div>
+          <div class="dialog-box">
+            <div class="dialog-speaker">ESTADO</div>
+            <div class="dialog-text">MVP cerrado. Beta testeado. Jugable de inicio a fin.<span class="blink-cur"></span></div>
+            <div class="checklist">
+              <div class="check-item"><span class="ck">✓</span><span>Motor VN completo: typewriter, fondos, sprites, música, SFX</span><span class="ok">OK</span></div>
+              <div class="check-item"><span class="ck">✓</span><span>435 escenas · 10 caps + prólogo · 4 finales</span><span class="ok">OK</span></div>
+              <div class="check-item"><span class="ck">✓</span><span>2 minijuegos integrados narrativamente</span><span class="ok">OK</span></div>
+              <div class="check-item" style="border-color:var(--heka);background:rgba(0,191,255,.07)"><span class="ck">✓</span><span>Mapa interactivo · SQLite · HUD animado</span><span class="ok">OK</span></div>
+              <div class="check-item"><span class="ck">✓</span><span>Beta testing · 4 usuarios · media 4,3 / 5</span><span class="ok">OK</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="estado-right">
+        <div class="ratings-panel a" data-d="3">
+          <h3>Beta testing · 4 usuarios</h3>
+          <div class="rating-row"><span class="rating-label">Sistema de guardado</span><span class="rating-val">5,0 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Calidad narrativa</span><span class="rating-val">4,75 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Satisfacción global</span><span class="rating-val">4,5 / 5</span></div>
+          <div class="rating-avg">Media global · 4,3 / 5</div>
+        </div>
+        <div class="tester-quote a" data-d="4">
+          <blockquote>«¿Hay más capítulos? Quiero saber qué pasa con Lira.»</blockquote>
+          <cite>— Tester 4</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S11 · TRABAJO FUTURO                   ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="futuro" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">A partir de aquí</div>
+    <h2 class="section-title a" data-d="2">
+      Polish → itch.io → <span class="accent">Steam</span> → Android.
+    </h2>
+    <div class="timeline-wrap a" data-d="2">
+      <div class="timeline-rail"></div>
+      <div class="timeline-nodes">
+        <div class="tl-node current">
+          <div class="tl-dot">1</div>
+          <div class="tl-body"><div class="tl-phase">FASE 1 · YA</div><h3>Polish + EN</h3><p>Efectos de pantalla, sprites pendientes. Traducción al inglés sobre la misma arquitectura JSON.</p></div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot">2</div>
+          <div class="tl-body"><div class="tl-phase">FASE 2</div><h3>itch.io</h3><p>Coste 0 €. Build Win/Linux/Mac. Lanzamiento en comunidad indie hispanohablante.</p></div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot">3</div>
+          <div class="tl-body"><div class="tl-phase">FASE 3</div><h3>Steam</h3><p>Fee 100 $. Steamworks + Achievements. Break-even a 29 ventas. Coming soon → wishlists.</p></div>
+        </div>
+        <div class="tl-node">
+          <div class="tl-dot">4</div>
+          <div class="tl-body"><div class="tl-phase">FASE 4</div><h3>Android</h3><p>Renderer Compatibility ya soporta móvil. Touch input compatible en ambos minijuegos.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-stats">
+      <div class="ts-card a" data-d="2"><div class="ts-v">0 €</div><div class="ts-k">itch.io · entrada</div></div>
+      <div class="ts-card a" data-d="3"><div class="ts-v">100 $</div><div class="ts-k">Steam · fee única</div></div>
+      <div class="ts-card a" data-d="4"><div class="ts-v">29</div><div class="ts-k">Ventas break-even</div></div>
+      <div class="ts-card a" data-d="5"><div class="ts-v">+EN</div><div class="ts-k">Solo traducción JSON</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S12 · CIERRE                           ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="cierre">
+  <canvas id="cierre-canvas"></canvas>
+  <div class="cierre-vignette"></div>
+  <div class="cierre-content">
+    <div class="cierre-pre a" data-d="1">CIERRE · GRACIAS</div>
+    <h2 class="cierre-quote a" data-d="2">
+      No hay monstruos en esta historia.<br>
+      Solo personas que tomaron decisiones<br>
+      con lo que <span class="igh">tenían</span>.
+    </h2>
+    <div class="cierre-igual a" data-d="3">Igual que tú.</div>
+    <div class="cierre-sig a" data-d="4">
+      <div class="cierre-line"></div>
+      <div class="cierre-name">JOSE M. ROMERO NIEVES · JIMMYROM1</div>
+      <div class="cierre-meta">TFC · DAM · CEU FP VALENCIA · 2024 – 2025</div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ── Particle system ── */
+class ParticleField {
+  constructor(canvas, opts = {}) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.opts = { density: 0.85, sparks: true, ...opts };
+    this.dust = []; this.sparks = []; this.running = false;
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.resize(); this.init();
+  }
+  resize() {
+    const w = this.canvas.clientWidth || window.innerWidth;
+    const h = this.canvas.clientHeight || window.innerHeight;
+    this.canvas.width = w * this.dpr; this.canvas.height = h * this.dpr;
+    this.w = w; this.h = h;
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+  }
+  init() {
+    const n = Math.floor(120 * this.opts.density);
+    this.dust = Array.from({ length: n }, () => this.spawnDust(true));
+  }
+  spawnDust(init = false) {
+    return {
+      x: Math.random() * this.w,
+      y: init ? Math.random() * this.h : this.h + 20,
+      vx: (Math.random() - .5) * .15,
+      vy: -.05 - Math.random() * .25,
+      r: .6 + Math.random() * 2.2,
+      a: .15 + Math.random() * .55,
+      ph: Math.random() * Math.PI * 2,
+      ps: .005 + Math.random() * .012,
+      hue: Math.random() < .7 ? 'blue' : 'copper',
+    };
+  }
+  spawnSpark() {
+    const e = Math.random();
+    let x, y, vx, vy;
+    if (e < .5) {
+      x = Math.random() * this.w;
+      y = Math.random() < .5 ? -5 : this.h + 5;
+      vx = (Math.random() - .5) * 2;
+      vy = y < 0 ? .5 + Math.random() * 1.2 : -(.5 + Math.random() * 1.2);
+    } else {
+      x = Math.random() < .5 ? -5 : this.w + 5;
+      y = Math.random() * this.h;
+      vx = x < 0 ? .5 + Math.random() * 1.5 : -(.5 + Math.random() * 1.5);
+      vy = (Math.random() - .5);
+    }
+    return { x, y, vx, vy, life: 1, decay: .006 + Math.random() * .01, len: 18 + Math.random() * 28 };
+  }
+  start() {
+    if (this.running) return;
+    this.running = true;
+    this.lastSpark = 0;
+    const tick = t => {
+      if (!this.running) return;
+      this.draw(t);
+      this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+  stop() { this.running = false; if (this.raf) cancelAnimationFrame(this.raf); }
+  draw(t) {
+    const ctx = this.ctx;
+    ctx.fillStyle = 'rgba(5,6,10,.18)';
+    ctx.fillRect(0, 0, this.w, this.h);
+    for (const p of this.dust) {
+      p.x += p.vx + Math.sin(p.ph) * .3; p.y += p.vy; p.ph += p.ps;
+      if (p.y < -10 || p.x < -10 || p.x > this.w + 10) Object.assign(p, this.spawnDust(false));
+      const aa = p.a * (.6 + .4 * Math.sin(p.ph));
+      const col = p.hue === 'blue' ? `rgba(120,210,255,${aa})` : `rgba(217,162,76,${aa * .7})`;
+      ctx.beginPath(); ctx.fillStyle = col;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      if (p.r > 1.6) {
+        ctx.beginPath(); ctx.fillStyle = col.replace(/[\d.]+\)$/, `${aa * .12})`);
+        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    if (this.opts.sparks) {
+      if (t - this.lastSpark > 700 + Math.random() * 1800) {
+        this.sparks.push(this.spawnSpark()); this.lastSpark = t;
+      }
+      for (let i = this.sparks.length - 1; i >= 0; i--) {
+        const s = this.sparks[i];
+        s.x += s.vx; s.y += s.vy; s.life -= s.decay;
+        if (s.life <= 0) { this.sparks.splice(i, 1); continue; }
+        const tx = s.x - s.vx * s.len * .4, ty = s.y - s.vy * s.len * .4;
+        const g = ctx.createLinearGradient(tx, ty, s.x, s.y);
+        g.addColorStop(0, `rgba(0,191,255,0)`); g.addColorStop(1, `rgba(180,230,255,${s.life})`);
+        ctx.strokeStyle = g; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(s.x, s.y); ctx.stroke();
+        ctx.beginPath(); ctx.fillStyle = `rgba(220,245,255,${s.life * .8})`;
+        ctx.arc(s.x, s.y, 1.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+  }
+}
+
+/* ── Typewriter ── */
+function typeWriter(el, text, speed = 90) {
+  el.textContent = '';
+  const cur = document.createElement('span'); cur.className = 'tw-cur'; el.appendChild(cur);
+  let i = 0;
+  const step = () => {
+    if (i < text.length) {
+      cur.insertAdjacentText('beforebegin', text[i++]);
+      setTimeout(step, Math.random() < .08 ? speed * 4.5 : speed);
+    } else {
+      setTimeout(() => cur.remove(), 1300);
+    }
+  };
+  setTimeout(step, 800);
+}
+
+/* ── Counter animation ── */
+function animateCount(el, target, duration = 1800, isFloat = false) {
+  const start = performance.now();
+  const update = now => {
+    const p = Math.min((now - start) / duration, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = isFloat ? (e * target).toFixed(1) : Math.floor(e * target);
+    if (p < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+/* ── IntersectionObserver ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('in');
+    // counter
+    if (entry.target.dataset.count) animateCount(entry.target, +entry.target.dataset.count);
+    if (entry.target.dataset.countDec) animateCount(entry.target, +entry.target.dataset.countDec, 1800, true);
+    io.unobserve(entry.target);
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.a, .a-l, .a-r').forEach(el => io.observe(el));
+
+/* ── Nav scroll behavior ── */
+const navbar = document.getElementById('navbar');
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrolled / total * 100) + '%';
+  navbar.classList.toggle('scrolled', scrolled > 60);
+
+  /* parallax hero keyart */
+  if (heroKeyart && scrolled < window.innerHeight * 1.5) {
+    heroKeyart.style.transform = 'translateY(' + (scrolled * 0.32) + 'px)';
+  }
+}, { passive: true });
+
+/* ── Nav active section ── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link[data-sec]');
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.toggle('active', l.dataset.sec === e.target.id));
+    }
+  });
+}, { threshold: 0.45 });
+sections.forEach(s => secObserver.observe(s));
+
+/* ── Hero particles ── */
+const heroCanvas = document.getElementById('hero-canvas');
+heroCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:3';
+const heroPF = new ParticleField(heroCanvas, { density: 1.0, sparks: true });
+heroPF.start();
+window.addEventListener('resize', () => heroPF.resize(), { passive: true });
+
+/* ── Typewriter on hero ── */
+const heroTW = document.getElementById('hero-typewriter');
+const heroIO = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { typeWriter(heroTW, 'HEKA', 110); heroIO.disconnect(); }
+}, { threshold: .3 });
+heroIO.observe(heroTW);
+
+/* ── Ring animation trigger ── */
+const mechSection = document.getElementById('mecanica');
+const ringIO = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelector('.ring-fg')?.classList.add('animated');
+    document.querySelector('.hud-fill')?.classList.add('animated');
+    ringIO.disconnect();
+  }
+}, { threshold: .35 });
+mechSection && ringIO.observe(mechSection);
+
+/* ── Waveform bars ── */
+const wfEl = document.getElementById('wf-bars');
+if (wfEl) {
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('span');
+    const h = 18 + Math.abs(Math.sin(i * .18) * 62) + Math.random() * 28;
+    s.style.height = h + '%';
+    s.style.animationDelay = (i * 22) + 'ms';
+    s.style.animationDuration = (1.1 + Math.random() * 1.2) + 's';
+    wfEl.appendChild(s);
+  }
+}
+
+/* ── Cierre particles ── */
+const cierreCanvas = document.getElementById('cierre-canvas');
+cierreCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:1';
+let cierrePF = null;
+const cierreIO = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !cierrePF) {
+    cierrePF = new ParticleField(cierreCanvas, { density: 1.1, sparks: true });
+    cierrePF.start();
+  }
+}, { threshold: .1 });
+cierreIO.observe(document.getElementById('cierre'));
+
+/* ── Curtain observer ── */
+const curtainIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('revealed');
+      curtainIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.04, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('section:not(#hero)').forEach(s => curtainIO.observe(s));
+
+/* ── Parallax hero ── */
+const heroKeyart = document.querySelector('.hero-keyart');
+
+</script>
+</body>
+</html>
