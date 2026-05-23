@@ -1092,6 +1092,70 @@ body {
   text-transform: uppercase; color: var(--paper-d);
 }
 
+/* ─────────────────────────────────────────────
+   S_OBJ · OBJETIVOS
+───────────────────────────────────────────── */
+.obj-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 16px;
+}
+.obj-card {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg,rgba(0,191,255,.04),transparent);
+  border-left: 2px solid var(--heka);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.obj-num {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--copper-l);
+}
+.obj-card h3 {
+  font-family: var(--display); font-size: 17px; letter-spacing: .03em;
+}
+.obj-card p {
+  font-family: var(--serif); font-size: 14px; line-height: 1.55; color: var(--paper-m);
+}
+.obj-general {
+  padding: 24px 28px; margin-bottom: 36px;
+  border: 1px solid var(--line-s);
+  background: linear-gradient(90deg,rgba(0,191,255,.06),transparent 70%);
+  border-left: 3px solid var(--heka);
+  font-family: var(--serif); font-size: 20px; line-height: 1.6; color: var(--paper-m);
+}
+.obj-general strong { color: var(--paper); font-style: italic; }
+
+/* ─────────────────────────────────────────────
+   S_COD · CÓDIGO
+───────────────────────────────────────────── */
+.code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.code-block { border: 1px solid var(--line-s); background: var(--ink-2); overflow: hidden; }
+.code-block-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 18px; border-bottom: 1px solid var(--line);
+  background: rgba(0,0,0,.25);
+}
+.code-filename { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--heka); }
+.code-tag     { font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--copper-l); }
+.code-block pre {
+  font-family: var(--mono); font-size: 14px; line-height: 1.7;
+  color: var(--paper-m); padding: 22px 20px; margin: 0; overflow-x: auto;
+}
+.kw  { color: #7dd3fc; }
+.fn  { color: #86efac; }
+.str { color: #fde68a; }
+.cm  { color: rgba(245,230,211,.38); font-style: italic; }
+.nu  { color: var(--copper-l); }
+.code-desc {
+  margin-top: 14px; padding: 14px 18px;
+  border: 1px solid var(--line); border-left: 2px solid var(--copper-l);
+  font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--paper-m);
+}
+.code-desc strong { color: var(--paper); font-style: italic; }
+.code-desc code {
+  font-family: var(--mono); font-size: 13px; color: var(--heka);
+  background: rgba(0,191,255,.08); padding: 1px 6px;
+}
+
 /* ── TV / large-screen (≥1600px) ── */
 @media screen and (min-width: 1600px) {
   :root {
@@ -1288,6 +1352,65 @@ section:not(#hero).revealed::after {
   <div class="scroll-hint a" data-d="7">
     <div class="scroll-hint-line"></div>
     <span>DESPLÁZATE</span>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S_OBJ · OBJETIVOS                      ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="objetivos" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">Punto de partida</div>
+    <h2 class="section-title a" data-d="2">
+      Un objetivo general. <span class="accent">Ocho específicos.</span>
+    </h2>
+    <div class="obj-general a" data-d="2">
+      Objetivo general: <strong>desarrollar una novela visual narrativa completa y jugable en Godot 4.6</strong>,
+      migrando y superando la versión previa en JavaFX con persistencia CSV.
+    </div>
+    <div class="obj-grid">
+      <div class="obj-card a" data-d="2">
+        <div class="obj-num">OBJ 01</div>
+        <h3>Grafo narrativo</h3>
+        <p>435 escenas JSON — Prólogo + 10 capítulos + 4 finales condicionados por decisiones acumuladas.</p>
+      </div>
+      <div class="obj-card a" data-d="3">
+        <div class="obj-num">OBJ 02</div>
+        <h3>Sistema Heka</h3>
+        <p>Espejo moral con variables numéricas acotadas y flags booleanos en GameState sin feedback explícito.</p>
+      </div>
+      <div class="obj-card a" data-d="4">
+        <div class="obj-num">OBJ 03</div>
+        <h3>Overlay de decisiones</h3>
+        <p>12 puntos de decisión en decisions_overlay.json que sobreescriben el grafo principal sin modificarlo.</p>
+      </div>
+      <div class="obj-card a" data-d="5">
+        <div class="obj-num">OBJ 04</div>
+        <h3>Dos minijuegos</h3>
+        <p>Integrados narrativamente: puzzle cables (Bézier drag&amp;drop) y puzzle tuberías (BFS en grid 6×6).</p>
+      </div>
+      <div class="obj-card a" data-d="2">
+        <div class="obj-num">OBJ 05</div>
+        <h3>Mapa interactivo</h3>
+        <p>Old Venice con 6 zonas clicables, panel lateral de objetos desbloqueados y detalle de lore por zona.</p>
+      </div>
+      <div class="obj-card a" data-d="3">
+        <div class="obj-num">OBJ 06</div>
+        <h3>Coleccionables</h3>
+        <p>10 objetos de lore en 6 zonas, desbloqueados por condición declarativa en JSON sin hardcode.</p>
+      </div>
+      <div class="obj-card a" data-d="4">
+        <div class="obj-num">OBJ 07</div>
+        <h3>Sistema de guardado</h3>
+        <p>4 slots sin dependencias externas: slot 0 autoguardado automático + 3 manuales con timestamp.</p>
+      </div>
+      <div class="obj-card a" data-d="5">
+        <div class="obj-num">OBJ 08</div>
+        <h3>Beta testing</h3>
+        <p>Validación con 4 usuarios externos sobre el ejecutable MVP mediante formulario estructurado.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1676,6 +1799,75 @@ section:not(#hero).revealed::after {
 </section>
 
 <!-- ╔══════════════════════════════════════════╗ -->
+<!-- ║  S_COD · CÓDIGO                         ║ -->
+<!-- ╚══════════════════════════════════════════╝ -->
+<section id="codigo" class="section alt">
+  <div class="container">
+    <div class="section-line a"></div>
+    <div class="section-eyebrow a" data-d="1">GDScript 2.0 en producción</div>
+    <h2 class="section-title a" data-d="2">
+      Dos patrones clave. <span class="accent">Cero librerías externas.</span>
+    </h2>
+    <div class="code-grid">
+      <div class="a" data-d="2">
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-filename">game_scene.gd</span>
+            <span class="code-tag">Typewriter · Tween</span>
+          </div>
+          <pre><span class="cm"># Interpola visible_characters sin timer manual</span>
+<span class="kw">func</span> <span class="fn">_start_typewriter</span>(text: String) -&gt; void:
+  dialog_text.text = text
+  dialog_text.visible_characters = <span class="nu">0</span>
+  _typewriter_tween = create_tween()
+  _typewriter_tween.tween_property(
+    dialog_text,
+    <span class="str">"visible_characters"</span>,
+    text.length(),
+    text.length() * <span class="nu">0.035</span>
+  )
+  _typewriter_tween.tween_callback(
+    _on_typewriter_finished
+  )</pre>
+        </div>
+        <div class="code-desc">
+          <strong>Tween nativo</strong> interpola <code>visible_characters</code> en RichTextLabel.
+          La velocidad escala con la longitud del texto — sin <code>Timer</code>, sin <code>_process()</code>.
+        </div>
+      </div>
+      <div class="a" data-d="3">
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-filename">game_state.gd → stats_hud.gd</span>
+            <span class="code-tag">Observer · Signal</span>
+          </div>
+          <pre><span class="cm"># GameState — emisor</span>
+<span class="kw">signal</span> stats_changed
+
+<span class="kw">func</span> <span class="fn">add_stat</span>(stat: String, value: int) -&gt; void:
+  <span class="kw">var</span> limits := STAT_LIMITS[stat]
+  <span class="kw">var</span> new_val := clamp(
+    get(stat) + value, limits[<span class="nu">0</span>], limits[<span class="nu">1</span>]
+  )
+  set(stat, new_val)
+  stats_changed.emit()
+
+<span class="cm"># stats_hud.gd — receptor</span>
+<span class="kw">func</span> <span class="fn">_ready</span>() -&gt; void:
+  GameState.stats_changed.connect(
+    _on_stats_changed
+  )</pre>
+        </div>
+        <div class="code-desc">
+          Patrón <strong>Observer</strong> con señales nativas de Godot 4.
+          El HUD actualiza solo cuando el estado cambia — sin polling en <code>_process()</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗ -->
 <!-- ║  S9 · CONTEXTO DE MERCADO               ║ -->
 <!-- ╚══════════════════════════════════════════╝ -->
 <section id="mercado" class="section alt">
@@ -1739,10 +1931,18 @@ section:not(#hero).revealed::after {
       </div>
       <div class="estado-right">
         <div class="ratings-panel a" data-d="3">
-          <h3>Beta testing · 4 usuarios</h3>
+          <h3>Beta testing · 4 usuarios · MVP (Prólogo + Caps 1–3)</h3>
           <div class="rating-row"><span class="rating-label">Sistema de guardado</span><span class="rating-val">5,0 / 5</span></div>
-          <div class="rating-row"><span class="rating-label">Calidad narrativa</span><span class="rating-val">4,75 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Calidad de diálogos y personajes</span><span class="rating-val">4,75 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Experiencia narrativa general</span><span class="rating-val">4,5 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Mapa interactivo · zonas y objetos</span><span class="rating-val">4,5 / 5</span></div>
           <div class="rating-row"><span class="rating-label">Satisfacción global</span><span class="rating-val">4,5 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Fluidez entre escenas</span><span class="rating-val">4,25 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Puzzle de cables</span><span class="rating-val">4,25 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Velocidad del typewriter</span><span class="rating-val">4,0 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Claridad de las decisiones</span><span class="rating-val">3,75 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Puzzle de tuberías</span><span class="rating-val">3,5 / 5</span></div>
+          <div class="rating-row"><span class="rating-label">Comprensión del worldbuilding</span><span class="rating-val">3,5 / 5</span></div>
           <div class="rating-avg">Media global · 4,3 / 5</div>
         </div>
         <div class="tester-quote a" data-d="4">
