@@ -1305,7 +1305,7 @@ section:not(#hero).revealed::after {
 
     <div class="stat-row">
       <div class="stat-card a" data-d="1">
-        <div class="stat-num" data-count="500">0</div>
+        <div class="stat-num" data-count="500">500</div>
         <div class="stat-unit">M+</div>
         <div class="stat-label">Hispanohablantes</div>
       </div>
@@ -1314,12 +1314,12 @@ section:not(#hero).revealed::after {
         <div class="stat-label">Competencia directa en español</div>
       </div>
       <div class="stat-card a" data-d="3">
-        <div class="stat-num" data-count-dec="9.1">0</div>
+        <div class="stat-num" data-count-dec="9.1">9,1</div>
         <div class="stat-unit">% CAGR</div>
         <div class="stat-label">Crecimiento Mercado VN 2024–2035</div>
       </div>
       <div class="stat-card gold a" data-d="4">
-        <div class="stat-num" data-count="29">0</div>
+        <div class="stat-num" data-count="29">29</div>
         <div class="stat-label">Ventas para el break-even en Steam</div>
       </div>
     </div>
@@ -1948,9 +1948,12 @@ const io = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
     entry.target.classList.add('in');
-    // counter
+    // counter on self
     if (entry.target.dataset.count) animateCount(entry.target, +entry.target.dataset.count);
     if (entry.target.dataset.countDec) animateCount(entry.target, +entry.target.dataset.countDec, 1800, true);
+    // counter on children (stat-num inside stat-card, etc.)
+    entry.target.querySelectorAll('[data-count]').forEach(el => animateCount(el, +el.dataset.count));
+    entry.target.querySelectorAll('[data-count-dec]').forEach(el => animateCount(el, +el.dataset.countDec, 1800, true));
     io.unobserve(entry.target);
   });
 }, { threshold: 0.12 });
