@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>HEKA: Islas en Sombra — Novela Visual · TFG 2024–2025</title>
+<title>HEKA: Islas en Sombra — Novela Visual · TFC 2025–2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="HEKA: Islas en Sombra — Una novela visual steampunk donde tus decisiones no tienen respuesta, solo consecuencias.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -343,7 +343,7 @@ body {
   text-indent: .52em;
 }
 .hero-stamp-wrap {
-  display: flex; align-items: center; gap: 0; width: min(800px, 80vw);
+  display: flex; align-items: center; gap: 0; width: min(1100px, 88vw);
 }
 .hero-stamp-wrap::before,
 .hero-stamp-wrap::after {
@@ -353,12 +353,12 @@ body {
 .hero-stamp-wrap::after  { background: linear-gradient(270deg, transparent, var(--heka)); }
 .hero-stamp {
   flex-shrink: 0;
-  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  font-family: var(--mono); font-size: clamp(20px, 2.8vw, 42px); font-weight: 700;
   letter-spacing: .75em; text-transform: uppercase;
-  color: var(--heka); padding: 11px 36px; text-indent: .75em;
+  color: var(--heka); padding: clamp(14px, 1.5vw, 24px) clamp(40px, 4vw, 72px); text-indent: .75em;
   border: 1px solid var(--heka);
   background: rgba(0,191,255,.05);
-  box-shadow: 0 0 50px rgba(0,191,255,.1), inset 0 0 20px rgba(0,191,255,.04);
+  box-shadow: 0 0 80px rgba(0,191,255,.18), inset 0 0 30px rgba(0,191,255,.06);
   position: relative;
 }
 .hero-stamp::before,.hero-stamp::after {
@@ -1092,6 +1092,54 @@ body {
   text-transform: uppercase; color: var(--paper-d);
 }
 
+/* ── TV / large-screen (≥1600px) ── */
+@media screen and (min-width: 1600px) {
+  :root {
+    --max:   1560px;
+    --nav-h: 76px;
+  }
+  .section { padding: 160px 0; }
+  .container { padding: 0 80px; }
+
+  /* Nav */
+  .nav-logo  { font-size: 22px; }
+  .nav-link  { font-size: 13px; }
+  .nav-tag   { font-size: 12px; }
+  .nav-cta   { font-size: 13px; padding: 9px 22px; }
+
+  /* Hero */
+  .hero-badge   { font-size: 15px; padding: 11px 30px; }
+  .hero-tagline { font-size: clamp(20px, 2vw, 30px); }
+  .hero-author  { font-size: 14px; }
+  .hero-platform { font-size: 13px; padding: 8px 18px; }
+
+  /* Section labels */
+  .section-eyebrow { font-size: 15px; }
+  .section-title   { font-size: clamp(42px, 4vw, 78px); }
+
+  /* Body text */
+  .problema-text p { font-size: 22px; }
+  .prot-desc       { font-size: 22px; }
+  .mech-item p     { font-size: 18px; }
+  .zone-card p     { font-size: 18px; }
+  .tl-body p       { font-size: 17px; }
+  .final-card p    { font-size: 17px; }
+  .dialog-text     { font-size: 20px; }
+  .check-item      { font-size: 19px; }
+
+  /* Tags / chips */
+  .chip      { font-size: 13px; padding: 8px 18px; }
+  .stat-label { font-size: 14px; }
+  .spec-v    { font-size: 20px; }
+  .stack-v   { font-size: 22px; }
+  .track-item h3 { font-size: 20px; }
+  .track-role    { font-size: 13px; }
+
+  /* Cierre */
+  .cierre-meta { font-size: 14px; }
+  .cierre-name { font-size: 24px; }
+}
+
 /* ── Prefers-reduced-motion ── */
 @media (prefers-reduced-motion: reduce) {
   .a { transition: opacity .3s ease !important; transform: none !important; filter: none !important; }
@@ -1203,7 +1251,7 @@ section:not(#hero).revealed::after {
   <div class="hero-content">
     <div class="hero-badge a">
       <span class="sep">◆</span>
-      TRABAJO FIN DE CICLO · DAM · CEU FP VALENCIA · 2024 – 2025
+      TRABAJO FIN DE CICLO · DAM · CEU FP VALENCIA · 2025 – 2026
       <span class="sep">◆</span>
     </div>
 
@@ -1763,7 +1811,7 @@ section:not(#hero).revealed::after {
     <div class="cierre-sig a" data-d="4">
       <div class="cierre-line"></div>
       <div class="cierre-name">JOSE M. ROMERO NIEVES · JIMMYROM1</div>
-      <div class="cierre-meta">TFC · DAM · CEU FP VALENCIA · 2024 – 2025</div>
+      <div class="cierre-meta">TFC · DAM · CEU FP VALENCIA · 2025 – 2026</div>
     </div>
   </div>
 </section>
