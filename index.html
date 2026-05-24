@@ -1290,7 +1290,6 @@ section:not(#hero).revealed::after {
       <a href="#mecanica"    class="nav-link" data-sec="mecanica">Mecánica</a>
       <a href="#demo"        class="nav-link" data-sec="demo">Demo</a>
       <a href="#arquitectura" class="nav-link" data-sec="arquitectura">Técnico</a>
-      <a href="#mercado"     class="nav-link" data-sec="mercado">Mercado</a>
       <a href="#estado"      class="nav-link" data-sec="estado">Estado</a>
     </div>
     <div class="nav-right">
@@ -1868,38 +1867,6 @@ section:not(#hero).revealed::after {
 </section>
 
 <!-- ╔══════════════════════════════════════════╗ -->
-<!-- ║  S9 · CONTEXTO DE MERCADO               ║ -->
-<!-- ╚══════════════════════════════════════════╝ -->
-<section id="mercado" class="section alt">
-  <div class="container">
-    <div class="section-line a"></div>
-    <div class="section-eyebrow a" data-d="1">Más allá del TFG</div>
-    <h2 class="section-title a" data-d="2">
-      El mercado <span class="accent">crece al 9%</span>. La competencia en español, no.
-    </h2>
-    <div class="market-layout">
-      <div class="waveform a" data-d="2">
-        <div class="wf-meta"><span>MERCADO VN GLOBAL · 2024 → 2035</span><span>CAGR 9,1 %</span></div>
-        <div class="wf-bars" id="wf-bars"></div>
-        <div class="wf-meta"><span style="color:var(--copper-l)">1.159 M $ (2024)</span><span style="color:var(--heka)">3.000 M $ (2035)</span></div>
-        <div class="wf-numbers">
-          <div><div class="wf-num-k">Steam · break-even</div><div class="wf-num-v" style="color:var(--heka)">29 ventas</div><div class="wf-num-sub">a 4,99 $ · fee 100 $</div></div>
-          <div><div class="wf-num-k">Competencia ES</div><div class="wf-num-v" style="color:var(--copper-l)">≈ 0</div><div class="wf-num-sub">solo traducciones en Steam</div></div>
-        </div>
-      </div>
-      <div class="tracklist a-r" data-d="3">
-        <div class="track-item"><div class="track-n">①</div><div><h3>Doki Doki Literature Club</h3><div class="track-role">VN · INGLÉS · GRATIS · 3M+ DESCARGAS</div></div><div class="track-dur">PC</div></div>
-        <div class="track-item"><div class="track-n">②</div><div><h3>Omori</h3><div class="track-role">VN-RPG · INGLÉS · MÚLTIPLES FINALES</div></div><div class="track-dur">PC</div></div>
-        <div class="track-item"><div class="track-n">③</div><div><h3>Undertale</h3><div class="track-role">RPG · MORAL EN COMBATE · 3 RUTAS</div></div><div class="track-dur">PC</div></div>
-        <div class="track-item playing"><div class="track-n">▶</div><div><h3>HEKA: Islas en Sombra</h3><div class="track-role">VN · ESPAÑOL · ESPEJO MORAL · 4 FINALES</div></div><div class="track-dur">PC</div></div>
-        <div class="track-item"><div class="track-n">·</div><div><h3>Brotato · Buckshot Roulette</h3><div class="track-role">GODOT · 6,9 M€ · 6,1 M€ · INDIE HITS</div></div><div class="track-dur">REF</div></div>
-        <div class="track-item"><div class="track-n">·</div><div><h3>Godot en Steam 2025</h3><div class="track-role">SUPERA TODO 2024 EN 8 MESES</div></div><div class="track-dur">+++</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ╔══════════════════════════════════════════╗ -->
 <!-- ║  S10 · ESTADO ACTUAL                    ║ -->
 <!-- ╚══════════════════════════════════════════╝ -->
 <section id="estado" class="section">
@@ -2212,17 +2179,6 @@ const ringIO = new IntersectionObserver(entries => {
 mechSection && ringIO.observe(mechSection);
 
 /* ── Waveform bars ── */
-const wfEl = document.getElementById('wf-bars');
-if (wfEl) {
-  for (let i = 0; i < 80; i++) {
-    const s = document.createElement('span');
-    const h = 18 + Math.abs(Math.sin(i * .18) * 62) + Math.random() * 28;
-    s.style.height = h + '%';
-    s.style.animationDelay = (i * 22) + 'ms';
-    s.style.animationDuration = (1.1 + Math.random() * 1.2) + 's';
-    wfEl.appendChild(s);
-  }
-}
 
 /* ── Cierre particles ── */
 const cierreCanvas = document.getElementById('cierre-canvas');
